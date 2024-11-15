@@ -18,31 +18,43 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        /*Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();*/
 
         String sql = "CREATE TABLE IF NOT EXISTS users " +
                 "(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL, " +
                 "age TINYINT NOT NULL)";
 
-        Query query = session.createSQLQuery(sql).addEntity(User.class);
+        /*Query query = session.createSQLQuery(sql).addEntity(User.class);
 
         transaction.commit();
-        session.close();
+        session.close();*/
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createSQLQuery(sql).addEntity(User.class);
+            transaction.commit();
+        }
     }
 
     @Override
     public void dropUsersTable() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        /*Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();*/
 
         String sql = "DROP TABLE IF EXISTS users";
 
-        Query query = session.createSQLQuery(sql).addEntity(User.class);
+        /*Query query = session.createSQLQuery(sql).addEntity(User.class);
 
         transaction.commit();
-        session.close();
+        session.close();*/
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            Query query = session.createSQLQuery(sql).addEntity(User.class);
+
+            transaction.commit();
+        }
     }
 
     @Override
@@ -82,22 +94,33 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        Session session = sessionFactory.openSession();
+        /*Session session = sessionFactory.openSession();
         List<User> users = session.createQuery("from User", User.class).list();
         session.close();
-        return users;
+        return users;*/
+        try (Session session = sessionFactory.openSession()) {
+            List<User> users = session.createQuery("from User", User.class).list();
+            return users;
+        }
     }
 
     @Override
     public void cleanUsersTable() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        /*Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();*/
 
         String sql = "DELETE FROM users";
 
-        Query query = session.createNativeQuery(sql).addEntity(User.class);
+        /*Query query = session.createNativeQuery(sql).addEntity(User.class);
 
         transaction.commit();
-        session.close();
+        session.close()*/;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            Query query = session.createNativeQuery(sql).addEntity(User.class);
+
+            transaction.commit();
+        }
     }
 }
